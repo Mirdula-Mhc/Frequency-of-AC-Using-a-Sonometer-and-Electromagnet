@@ -13,6 +13,10 @@ public class PageNavigationController : MonoBehaviour
     [Header("Page Display")]
     [SerializeField] private TMP_Text pageNumberText;
 
+    [Header("Developer Settings")]
+    [Tooltip("Displays the current page using its actual index (0-based). Disable this before making a build.")]
+    [SerializeField] private bool developerIndexMode = false;
+
     [Header("Testing Mode (Ignore Locks)")]
     [SerializeField] private bool testing = false;
 
@@ -171,12 +175,21 @@ public class PageNavigationController : MonoBehaviour
         OnNavigationUnlockRequested?.Invoke();
     }
 
+    /// <summary>
+    /// Updates the page number display.
+    /// Developer Mode ON  : 0/17, 1/17, ..., 16/17
+    /// Developer Mode OFF : 1/17, 2/17, ..., 17/17
+    /// </summary>
     private void UpdateDisplay()
     {
         if (!pageNumberText)
             return;
 
-        pageNumberText.text = (currentIndex + 1).ToString();
+        int displayedPage = developerIndexMode
+            ? currentIndex
+            : currentIndex + 1;
+
+        pageNumberText.text = $"{displayedPage}/{NavigationPageCount}";
     }
 
     // Optional helper methods
